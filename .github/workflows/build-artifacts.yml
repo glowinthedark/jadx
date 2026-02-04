@@ -29,7 +29,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build
-        run: ./gradlew dist distWin
+        run: ./gradlew dist
         env:
           JADX_BUILD_JAVA_VERSION: 11
 
