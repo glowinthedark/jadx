@@ -1,0 +1,46 @@
+name: Release Ubuntu
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+
+      - name: Set jadx version
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const jadxVersion = context.ref.split('/').pop().substring(1)
+            core.exportVariable('JADX_VERSION', jadxVersion)
+
+      # Uses:
+      # - Ubuntu 24.04 OOTB JDK (Temurin, already installed)
+      # - Gradle Wrapper from repo
+      - name: Build cross-platform distribution
+        run: ./gradlew dist
+
+      - name: Verify artifacts
+        run: |
+          ls -l build
+          ls -l build/dist
+          ls -l build/dist/*.zip
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ env.JADX_VERSION }}
+          draft: true
+          fail_on_unmatched_files: true
+          files: build/dist/jadx-*.zip
