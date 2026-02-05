@@ -42,4 +42,4 @@ jobs:
           draft: false
           fail_on_unmatched_files: true
           files: build/*.zip
-          tag: ${{ env.JADX_VERSION }}
+          tag_name: ${{ env.JADX_VERSION }}
