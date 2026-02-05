@@ -17,13 +17,13 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: master
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Set jadx version
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const jadxVersion = context.ref.split('/').pop().substring(1)
-            core.exportVariable('JADX_VERSION', jadxVersion)
+        id: setversion
+        run: |
+          echo "JADX_VERSION=$(git describe)" >> $GITHUB_ENV
 
       # Uses:
       # - Ubuntu 24.04 OOTB JDK (Temurin, already installed)
@@ -34,13 +34,11 @@ jobs:
       - name: Verify artifacts
         run: |
           ls -l build
-          ls -l build/dist
-          ls -l build/dist/*.zip
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ env.JADX_VERSION }}
-          draft: true
+          draft: false
           fail_on_unmatched_files: true
-          files: build/dist/jadx-*.zip
+          files: build/*.zip
