@@ -29,7 +29,7 @@ jobs:
       # - Ubuntu 24.04 OOTB JDK (Temurin, already installed)
       # - Gradle Wrapper from repo
       - name: Build cross-platform distribution
-        run: ./gradlew dist
+        run: ./gradlew --no-daemon dist
 
       - name: Verify artifacts
         run: |
